@@ -3,3 +3,8 @@ dist/
 *.log
 .DS_Store
 *.tsbuildinfo
+# CODESYS build artifacts / regenerated outputs
+*.generated.project
+*_project.precompilecache
+*.precompilecache
+*.opt

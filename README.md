@@ -13,8 +13,8 @@ No IDE plugin required: the server drives CODESYS headless via its official Scri
 ## Installation
 
 ```bash
-git clone https://github.com/<you>/codesys-auto-mcp.git
-cd codesys-auto-mcp
+git clone https://github.com/uiff/Codesys-MCP-Server.git
+cd Codesys-MCP-Server
 npm install        # also compiles (prepare script)
 npm run test:smoke # protocol self-test, no CODESYS needed
 ```
@@ -117,7 +117,10 @@ Generated IEC 61131-3 code is engineering assistance, **not** certified function
 
 ## Example: complete heat-pump controller
 
-`test/` and the pattern library demonstrate whole-application generation. A full air/water heat-pump controller — heat curve, DHW priority, compressor anti-short-cycle, pump pre/post sequencing, safety interlocks, a 7-state machine (`E_HpState`), 4 function blocks + 2 GVLs + enum — generates and compiles **clean** on Control Win V3 in one run.
+**[examples/heatpump/](examples/heatpump/)** contains a full heat-pump control application — heat curve, DHW priority, compressor anti-short-cycle protection, pump pre/post sequencing, backup-heater bivalence, safety interlocks, and a 7-state machine — as:
+
+- a **ready-built `.project`** you can open directly in CODESYS, and
+- the **ST sources + `generate.mjs`**, which regenerates and builds the whole project through this server in one run (`node examples/heatpump/generate.mjs` → ends with `"clean":true`).
 
 ## Status / Roadmap
 
@@ -126,6 +129,16 @@ Generated IEC 61131-3 code is engineering assistance, **not** certified function
 - ⚠️ IO mapping (`codesys_map_io`) uses the documented ScriptEngine API incl. connector traversal, but hasn't been exercised against physical IO hardware yet
 - 🔜 Online/simulation testing (login, force values, read outputs)
 - 🔜 Pattern-library CI self-tests against a real CODESYS build
+
+## Contributing
+
+Issues and pull requests are welcome! Especially valuable:
+
+- **Version quirk reports** — CODESYS service packs and vendor packages differ; if a tool misbehaves on your setup, open an issue with the CODESYS version, profile name, and the tool's error output.
+- **Pattern library additions** (`kb/patterns/*.st`) — reusable, verified IEC 61131-3 function blocks with an acceptance-test header.
+- **Device catalog entries** (`kb/catalog/`) — confirmed DeviceID triples for controllers and IO cards.
+
+Before submitting: `npm run build && npm run test:smoke` must pass; if you have CODESYS installed, `node test/e2e.mjs` is the full gate.
 
 ## License
 

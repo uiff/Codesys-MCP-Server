@@ -1,0 +1,4 @@
+PROGRAM PLC_PRG
+VAR
+	fbHeatPump : FB_HeatPump;
+END_VAR

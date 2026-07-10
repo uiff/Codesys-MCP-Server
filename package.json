@@ -27,6 +27,14 @@
   ],
   "author": "iotuel",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/uiff/Codesys-MCP-Server.git"
+  },
+  "bugs": {
+    "url": "https://github.com/uiff/Codesys-MCP-Server/issues"
+  },
+  "homepage": "https://github.com/uiff/Codesys-MCP-Server#readme",
   "type": "commonjs",
   "engines": {
     "node": ">=18.0.0"
