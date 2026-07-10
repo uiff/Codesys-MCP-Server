@@ -1,0 +1,43 @@
+{
+  "name": "codesys-auto-mcp",
+  "version": "0.1.0",
+  "description": "Independent Model Context Protocol server for CODESYS V3 — headless project/POU/task automation, structured build-error collection, device/IO scripting, and a built-in reusable ST pattern library.",
+  "main": "dist/server.js",
+  "bin": {
+    "codesys-auto-mcp": "./dist/bin.js"
+  },
+  "files": [
+    "dist",
+    "kb"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "prepare": "tsc",
+    "start": "node ./dist/bin.js",
+    "test:smoke": "node ./test/smoke.mjs"
+  },
+  "keywords": [
+    "codesys",
+    "mcp",
+    "modelcontextprotocol",
+    "plc",
+    "iec-61131-3",
+    "automation",
+    "structured-text"
+  ],
+  "author": "iotuel",
+  "license": "MIT",
+  "type": "commonjs",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.10.2",
+    "commander": "^11.1.0",
+    "zod": "^3.24.3"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.1",
+    "typescript": "^5.5.3"
+  }
+}

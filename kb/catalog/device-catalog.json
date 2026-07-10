@@ -1,0 +1,42 @@
+{
+  "note": "DeviceID = (type:int, id:hex 'VVVV DDDD' = VendorID+DeviceID, version). '*' = neueste. Vor Nutzung per codesys_list_devices gegen das lokale Repository verifizieren; Version haengt vom installierten Paket ab.",
+  "controllers": [
+    {
+      "name": "CODESYS Control Win V3",
+      "role": "softplc",
+      "deviceId": { "type": 4096, "id": "0000 0001", "version": "*" },
+      "notes": "Soft-PLC auf Windows-Host. Bringt PLC Logic + Application mit. Startet seit SP2 nicht automatisch; Gateway-Dienst noetig; User-Mgmt ab SP17 erzwungen; unlizenziert Demo-zeitbegrenzt. Live verifiziert: v3.5.22.10."
+    },
+    {
+      "name": "UC20-M3000",
+      "role": "plc",
+      "vendor": "Weidmueller Interface GmbH & Co. KG",
+      "deviceId": { "type": 4096, "id": "16C1 0204", "version": "*" },
+      "notes": "Weidmueller u-control M3000. Live verifiziert im Repository (Versionen 4.7.0.1 bis 4.12.1.0)."
+    },
+    {
+      "name": "UC20-M4000",
+      "role": "plc",
+      "vendor": "Weidmueller Interface GmbH & Co. KG",
+      "deviceId": { "type": 4096, "id": "16C1 0205", "version": "*" },
+      "notes": "Weidmueller u-control M4000. Live verifiziert im Repository (Versionen 4.7.0.1 bis 4.12.1.0)."
+    },
+    {
+      "name": "UC20-WL2000-AC",
+      "role": "plc",
+      "vendor": "Weidmueller Interface GmbH & Co. KG",
+      "deviceId": { "type": 4096, "id": "16C1 0201", "version": "*" },
+      "notes": "Weidmueller u-control 2000 (aeltere Linie); Variante -CAN = id 16C1 0203."
+    }
+  ],
+  "adapters": [
+    { "name": "Ethernet", "role": "fieldbus-adapter", "deviceId": { "type": 110, "id": "0000 0002", "version": "*" } }
+  ],
+  "fieldbus_masters": [
+    { "name": "EtherCAT Master", "role": "fieldbus-master", "deviceId": { "type": 64, "id": "0000 0001", "version": "*" }, "notes": "Id/Version je installiertem Paket verifizieren; Slaves per plug() einstecken." }
+  ],
+  "io_cards": [
+    { "placeholder": "DI-16", "kind": "digital_input", "channels": 16, "notes": "Reale Karte (z.B. EtherCAT EL1809) per ESI installieren, Tripel aus Repository uebernehmen." },
+    { "placeholder": "DO-16", "kind": "digital_output", "channels": 16, "notes": "Reale Karte (z.B. EL2809) per ESI installieren." }
+  ]
+}
