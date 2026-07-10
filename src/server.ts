@@ -170,6 +170,23 @@ export async function startMcpServer(config: ServerConfig): Promise<void> {
     async ({ projectFilePath, parentPath, name, declaration }) => fmt(await runScriptWithRetry(scripts.createGvl(projectFilePath, parentPath, name, declaration), cfg)),
   );
 
+  reg(
+    'codesys_create_dut',
+    {
+      title: 'Create DUT (struct/enum)',
+      description: 'Creates a Data Unit Type under parentPath and sets its declaration. dutType: Structure | Enumeration | Union | Alias. For an enum, pass the full "TYPE Name : (...) END_TYPE" as declaration (add {attribute \'qualified_only\'} for E_Name.Member access).',
+      inputSchema: {
+        projectFilePath: z.string(),
+        parentPath: z.string(),
+        name: z.string(),
+        dutType: z.enum(['Structure', 'Enumeration', 'Union', 'Alias']).default('Structure'),
+        declaration: z.string().optional().describe('Full TYPE...END_TYPE body'),
+      },
+      annotations: { readOnlyHint: rw, ...openWorld },
+    },
+    async ({ projectFilePath, parentPath, name, dutType, declaration }) => fmt(await runScriptWithRetry(scripts.createDut(projectFilePath, parentPath, name, dutType, declaration), cfg)),
+  );
+
   // ---------------- Task ----------------
   reg(
     'codesys_create_task',

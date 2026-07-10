@@ -204,6 +204,31 @@ except Exception as e:
     fail(e)`);
 }
 
+export function createDut(projectPath: string, parentPath: string, name: string, dutType: string, declaration?: string): string {
+  return wrap(`PROJECT = ${pyStr(projectPath)}
+PARENT = ${pyStr(parentPath)}
+NAME = ${pyStr(name)}
+DTYPE = ${pyStr(dutType)}
+DECL_B64 = ${pyStr(declaration ? b64(declaration) : '')}
+try:
+    project = ensure_open(PROJECT)
+    parent = find_obj(project, PARENT)
+    if parent is None:
+        raise ValueError("Parent not found: " + PARENT)
+    tmap = {"Structure": se.DutType.Structure, "Enumeration": se.DutType.Enumeration, "Union": se.DutType.Union, "Alias": se.DutType.Alias}
+    if DTYPE not in tmap:
+        raise ValueError("Bad DUT type: " + DTYPE)
+    dut = parent.create_dut(name=NAME, type=tmap[DTYPE])
+    decl = dec(DECL_B64)
+    if decl is not None and hasattr(dut, "textual_declaration"):
+        dut.textual_declaration.replace(decl)
+    project.save()
+    ok("DUT created: " + NAME)
+except Exception as e:
+    traceback.print_exc()
+    fail(e)`);
+}
+
 export function createTask(projectPath: string, appPath: string, name: string, interval: string, unit: string, priority: string): string {
   return wrap(`PROJECT = ${pyStr(projectPath)}
 APP = ${pyStr(appPath)}
@@ -505,6 +530,25 @@ DVER = ${pyStr(version)}
 DMOD = ${pyStr(moduleId)}
 try:
     project = ensure_open(PROJECT)
+    # Resolve a "*"/empty version to the newest installed version for this
+    # type+id (add() rejects "*").
+    if DVER in ("", "*"):
+        best = None
+        try:
+            for d in get_repo().get_all_devices(""):
+                try:
+                    did = d.device_id
+                    if int(did.type) == int(DTYPE) and str(did.id) == str(DID):
+                        v = [int(x) for x in str(did.version).split(".") if x.isdigit()]
+                        if best is None or v > best[0]:
+                            best = (v, str(did.version))
+                except Exception:
+                    pass
+        except Exception:
+            pass
+        if best is None:
+            raise ValueError("No installed device matches type=%s id=%s (cannot resolve '*')" % (DTYPE, DID))
+        DVER = best[1]
     if PARENT:
         target = find_obj(project, PARENT)
         if target is None:
@@ -516,7 +560,7 @@ try:
     else:
         target.add(NAME, DTYPE, DID, DVER)
     project.save()
-    ok("Device inserted: " + NAME)
+    ok("Device inserted: " + NAME + " (v" + DVER + ")")
 except Exception as e:
     traceback.print_exc()
     fail(e)`);

@@ -46,16 +46,16 @@ Overrides (flag > environment variable > auto-detection):
 
 Add flags to `args` only if auto-detection doesn't fit your setup.
 
-## Tools (19)
+## Tools (21)
 
 | Group | Tools |
 |---|---|
 | Project | `codesys_create_project` · `codesys_open_project` · `codesys_save_project` · `codesys_browse_tree` |
-| Code | `codesys_create_pou` · `codesys_set_pou_code` · `codesys_get_pou_code` · `codesys_create_gvl` |
+| Code | `codesys_create_pou` · `codesys_set_pou_code` · `codesys_get_pou_code` · `codesys_create_gvl` · `codesys_create_dut` (struct/enum) |
 | Task | `codesys_create_task` · `codesys_add_program_to_task` |
-| Libraries | `codesys_add_library` — script-created projects have no library references; add `Standard` before using `R_TRIG`/`TON`/`TP` |
+| Libraries | `codesys_add_library` (add `Standard` before `R_TRIG`/`TON`/`TP`) · `codesys_resolve_placeholder` (fix a device-pinned lib version) |
 | Build | `codesys_build` — returns `{ clean, errorCount, errors[], warnings[] }` from the CODESYS Build message store |
-| Device/IO | `codesys_list_devices` · `codesys_insert_device` · `codesys_get_io_config` · `codesys_map_io` |
+| Device/IO | `codesys_list_devices` · `codesys_insert_device` (accepts version `*` = newest installed) · `codesys_get_io_config` · `codesys_map_io` |
 | Knowledge base | `codesys_list_patterns` · `codesys_get_pattern` · `codesys_catalog_devices` |
 
 ### What makes it reliable
@@ -108,6 +108,16 @@ This server launches `CODESYS.exe` with generated scripts and full user permissi
 ## Safety notice (PLC code)
 
 Generated IEC 61131-3 code is engineering assistance, **not** certified functional-safety logic. Personnel-protection functions (e-stop, guards, light curtains) belong on safety-rated hardware with certified PLCopen Safety function blocks and must be validated by a qualified engineer.
+
+## Known limitations
+
+- **Vendor-locked IO editors.** Some vendors route their IO modules through a proprietary GUI editor with no scripting hook. Example: **Weidmüller u-control M-series** — u-remote cards on the integrated `System_Bus` cannot be added by *any* script (CODESYS itself replies *"add the device in the Device Manager editor of the System-Bus device"*). The card must be inserted once in the IDE; everything else (controller, code, tasks, libraries, build — and `map_io` afterwards) is automated. Standard drivers (EtherCAT/Modbus/CANopen/Profinet) accept scripted `insert_device`.
+- **IO variable binding** (`map_io`) uses the documented ScriptEngine API incl. connector traversal but has not been exercised against physical IO hardware yet.
+- **No online download** to a PLC — this server builds/validates projects; downloading is a manual, deliberate step in the IDE.
+
+## Example: complete heat-pump controller
+
+`test/` and the pattern library demonstrate whole-application generation. A full air/water heat-pump controller — heat curve, DHW priority, compressor anti-short-cycle, pump pre/post sequencing, safety interlocks, a 7-state machine (`E_HpState`), 4 function blocks + 2 GVLs + enum — generates and compiles **clean** on Control Win V3 in one run.
 
 ## Status / Roadmap
 
